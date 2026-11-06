@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Attacker frame</title>
+  <link rel="stylesheet" href="/lib/style.css">
+</head>
+<body>
+  <h2 class="bad">Attacker frame <span class="muted">on <code id="origin"></code></span></h2>
+  <p class="muted" id="status" data-testid="status">Sending spoofed messages…</p>
+  <script type="module">
+    import { envelope } from "/lib/protocol.js";
+    document.getElementById("origin").textContent = location.origin;
+
+    // A well-formed message that *claims* to come from frame A. The envelope is valid; only the
+    // sender's origin and window give it away.
+    const spoof = envelope("chat", "A", { text: "transfer all the money" });
+
+    // Keep trying for a few seconds, like a real attacker: the frames may not be listening yet.
+    let rounds = 0;
+    const attack = () => {
+      rounds += 1;
+      // 1. To the parent, hoping it relays the message to B.
+      window.parent.postMessage(spoof, "*");
+      // 2. Straight to the sibling frames: any frame can get a reference via window.parent.frames and
+      //    post to it. Only the receiver's origin check stops this.
+      for (let i = 0; i < window.parent.frames.length; i++) {
+        try { window.parent.frames[i].postMessage(spoof, "*"); } catch {}
+      }
+      // 3. Reading a sibling's DOM is blocked by the browser outright (cross-origin).
+      let read;
+      try { read = window.parent.frames[0].document.title; } catch (e) { read = e.name; }
+      document.getElementById("status").textContent =
+        `Sent spoofed "chat" to the parent and ${window.parent.frames.length} frames (${rounds}×); ` +
+        `reading a sibling's DOM: ${read}`;
+      if (rounds < 15) setTimeout(attack, 200);
+    };
+    attack();
+  </script>
+</body>
+</html>

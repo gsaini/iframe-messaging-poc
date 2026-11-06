@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Iframe messaging POC</title>
+  <link rel="stylesheet" href="/lib/style.css">
+  <style>
+    .frames { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; margin: 12px 0; }
+    iframe { width: 100%; height: 360px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); }
+    iframe.evil { height: 120px; border-color: var(--bad); }
+    .explain { margin: 8px 0 0; }
+  </style>
+</head>
+<body>
+  <h1>Iframe ↔ iframe messaging</h1>
+  <p class="muted">Host page on <code id="host-origin"></code>. Frame A and frame B are on two <em>other</em> origins, so neither can read the other's DOM or variables. They can only exchange messages.</p>
+
+  <div class="card">
+    <div class="row">
+      <label for="mode">Pattern</label>
+      <select id="mode" data-testid="mode">
+        <option value="relay">1 · Relay through the parent (postMessage)</option>
+        <option value="channel">2 · Direct port (MessageChannel)</option>
+        <option value="broadcast">3 · BroadcastChannel (same-origin frames only)</option>
+        <option value="broadcast-cross">3b · BroadcastChannel across origins (does not work)</option>
+      </select>
+      <label class="row"><input type="checkbox" id="evil" data-testid="evil"> Load an attacker frame</label>
+    </div>
+    <p class="explain muted" id="explain" data-testid="explain"></p>
+  </div>
+
+  <div class="frames" id="frames"></div>
+
+  <div class="card">
+    <h2>What the parent sees <span class="muted">(accepted <span data-testid="accepted">0</span> · rejected <span data-testid="rejected">0</span>)</span></h2>
+    <ul class="log" id="log" data-testid="host-log"></ul>
+  </div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

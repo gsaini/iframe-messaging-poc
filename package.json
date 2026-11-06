@@ -1,0 +1,18 @@
+{
+  "name": "iframe-messaging-poc",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Two cross-origin iframes talking: relay through the parent, a direct MessageChannel, and BroadcastChannel — with origin checks and an attacker frame.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Gopal Saini",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "playwright test",
+    "test:headed": "playwright test --headed"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.0"
+  },
+  "packageManager": "pnpm@11.0.0"
+}

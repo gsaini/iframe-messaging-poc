@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Frame</title>
+  <link rel="stylesheet" href="/lib/style.css">
+</head>
+<body>
+  <h2>Frame <span id="name" data-testid="name"></span> <span class="muted">on <code id="origin"></code></span></h2>
+  <p class="muted">Transport: <span id="transport" data-testid="transport">connecting…</span> · rejected <span id="rejected" data-testid="rejected">0</span></p>
+  <!-- Not a <form>: the frames are sandboxed without allow-forms, and Chromium and Firefox then block
+       form submission entirely (no submit event). A button keeps the sandbox tight. -->
+  <div id="chat" class="row">
+    <input type="text" id="text" data-testid="text" placeholder="Say something to the other frame" autocomplete="off" maxlength="500">
+    <button type="button" id="send" class="primary" data-testid="send">Send</button>
+    <button type="button" id="ping" data-testid="ping">Ping</button>
+  </div>
+  <ul class="log" id="inbox" data-testid="inbox"></ul>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
